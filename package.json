@@ -1,0 +1,26 @@
+{
+  "name": "react-native-smart-amap-location",
+  "version": "1.0.0",
+  "description": "A AMap location Library for React Native apps.",
+  "main": "AMapLocation.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/react-native-component/react-native-smart-amap-location.git"
+  },
+  "keywords": [
+    "react-native",
+    "smart",
+    "location",
+    "amap",
+    "component"
+  ],
+  "author": "HISAME SHIZUMARU",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/react-native-component/react-native-smart-amap-location/issues"
+  },
+  "homepage": "https://github.com/react-native-component/react-native-smart-amap-location#readme"
+}
