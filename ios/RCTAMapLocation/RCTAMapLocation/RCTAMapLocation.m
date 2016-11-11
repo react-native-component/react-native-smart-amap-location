@@ -1,6 +1,6 @@
 
-#define DefaultLocationTimeout 10
-#define DefaultReGeocodeTimeout 5
+#define DefaultLocationTimeout 2
+#define DefaultReGeocodeTimeout 2
 
 #import "RCTAMapLocation.h"
 #import "RCTUtils.h"
@@ -26,34 +26,40 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
         return;
     }
     
+//    NSLog(@"init locationManager");
+    
     CLLocationAccuracy locationAccuracy = kCLLocationAccuracyHundredMeters;
     BOOL pausesLocationUpdatesAutomatically = YES;
     BOOL allowsBackgroundLocationUpdates = NO;
-    NSInteger locationTimeout = DefaultLocationTimeout;
-    NSInteger reGeocodeTimeout = DefaultReGeocodeTimeout;
+    int locationTimeout = DefaultLocationTimeout;
+    int reGeocodeTimeout = DefaultReGeocodeTimeout;
     
     if(options != nil) {
-        if([[options objectForKey:@"locationAccuracy"] count] > 0) {
+        NSLog(@"set options");
+        
+        NSArray *keys = [options allKeys];
+        
+        if([keys containsObject:@"locationAccuracy"]) {
             locationAccuracy = [[options objectForKey:@"locationAccuracy"] doubleValue];
         }
         
-        
-        if([[options objectForKey:@"pausesLocationUpdatesAutomatically"] count] > 0) {
+        if([keys containsObject:@"pausesLocationUpdatesAutomatically"]) {
             pausesLocationUpdatesAutomatically = [[options objectForKey:@"pausesLocationUpdatesAutomatically"] boolValue];
         }
         
-        
-        if([[options objectForKey:@"allowsBackgroundLocationUpdates"] count] > 0) {
+        if([keys containsObject:@"allowsBackgroundLocationUpdates"]) {
             allowsBackgroundLocationUpdates = [[options objectForKey:@"allowsBackgroundLocationUpdates"] boolValue];
         }
         
         
-        if([[options objectForKey:@"locationTimeout"] count] > 0) {
-            locationTimeout = [[options objectForKey:@"locationTimeout"] integerValue];
+        if([keys containsObject:@"locationTimeout"]) {
+            locationTimeout = [[options objectForKey:@"locationTimeout"] intValue];
+//            NSLog(@"locationTimeout = %d", locationTimeout);
         }
         
-        if([[options objectForKey:@"reGeocodeTimeout"] count] > 0) {
-            reGeocodeTimeout = [[options objectForKey:@"reGeocodeTimeout"] integerValue];
+        if([keys containsObject:@"reGeocodeTimeout"]) {
+            reGeocodeTimeout = [[options objectForKey:@"reGeocodeTimeout"] intValue];
+//            NSLog(@"reGeocodeTimeout = %d", reGeocodeTimeout);
         }
     }
     
@@ -79,10 +85,13 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
 
 RCT_EXPORT_METHOD(cleanUp)
 {
+//    NSLog(@"stop location and clean up");
     //停止定位
     [self.locationManager stopUpdatingLocation];
     
     [self.locationManager setDelegate:nil];
+    
+    self.locationManager = nil;
 }
 
 RCT_EXPORT_METHOD(getReGeocode:(RCTResponseSenderBlock)callback)
