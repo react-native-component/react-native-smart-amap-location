@@ -4,6 +4,8 @@
 
 #import "RCTAMapLocation.h"
 #import "RCTUtils.h"
+#import "RCTBridge.h"
+#import "RCTEventDispatcher.h"
 
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <AMapLocationKit/AMapLocationKit.h>
@@ -18,6 +20,8 @@
 
 @implementation RCTAMapLocation
 
+@synthesize bridge = _bridge;
+
 RCT_EXPORT_MODULE(AMapLocation);
 
 RCT_EXPORT_METHOD(init:(NSDictionary *)options)
@@ -28,19 +32,19 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     
 //    NSLog(@"init locationManager");
     
-    CLLocationAccuracy locationAccuracy = kCLLocationAccuracyHundredMeters;
+    CLLocationAccuracy locationMode = kCLLocationAccuracyHundredMeters;
     BOOL pausesLocationUpdatesAutomatically = YES;
     BOOL allowsBackgroundLocationUpdates = NO;
     int locationTimeout = DefaultLocationTimeout;
     int reGeocodeTimeout = DefaultReGeocodeTimeout;
     
     if(options != nil) {
-        NSLog(@"set options");
+//        NSLog(@"set options");
         
         NSArray *keys = [options allKeys];
         
-        if([keys containsObject:@"locationAccuracy"]) {
-            locationAccuracy = [[options objectForKey:@"locationAccuracy"] doubleValue];
+        if([keys containsObject:@"locationMode"]) {
+            locationMode = [[options objectForKey:@"locationMode"] doubleValue];
         }
         
         if([keys containsObject:@"pausesLocationUpdatesAutomatically"]) {
@@ -68,7 +72,7 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     [self.locationManager setDelegate:self];
     
     //设置期望定位精度
-    [self.locationManager setDesiredAccuracy:locationAccuracy];
+    [self.locationManager setDesiredAccuracy:locationMode];
     
     //设置是否允许系统暂停定位
     [self.locationManager setPausesLocationUpdatesAutomatically:pausesLocationUpdatesAutomatically];
@@ -81,6 +85,70 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     
     //设置逆地理超时时间
     [self.locationManager setReGeocodeTimeout:reGeocodeTimeout];
+    
+    self.completionBlock = ^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error)
+    {
+        NSDictionary *resultDic;
+        if (error)
+        {
+            resultDic = @{
+                          @"error": @{
+                                  @"code": @(error.code),
+                                  @"localizedDescription": error.localizedDescription
+                                  }
+                          };
+        }
+        else {
+            //得到定位信息
+            if (location)
+            {
+                NSDictionary *resultDic;
+                
+                if(regeocode) {
+                    resultDic = @{
+                                  @"horizontalAccuracy": @(location.horizontalAccuracy),
+                                  @"verticalAccuracy": @(location.verticalAccuracy),
+                                  @"coordinate": @{
+                                          @"latitude": @(location.coordinate.latitude),
+                                          @"longitude": @(location.coordinate.longitude),
+                                          },
+                                  @"formattedAddress": regeocode.formattedAddress,
+                                  @"country": regeocode.country,
+                                  @"province": regeocode.province,
+                                  @"city": regeocode.city,
+                                  @"district": regeocode.district,
+                                  @"citycode": regeocode.citycode,
+                                  @"adcode": regeocode.adcode,
+                                  @"street": regeocode.street,
+                                  @"number": regeocode.number,
+                                  @"POIName": regeocode.POIName,
+                                  @"AOIName": regeocode.AOIName
+                                  };
+                }
+                else {
+                    resultDic = @{
+                                  @"horizontalAccuracy": @(location.horizontalAccuracy),
+                                  @"verticalAccuracy": @(location.verticalAccuracy),
+                                  @"coordinate": @{
+                                          @"latitude": @(location.coordinate.latitude),
+                                          @"longitude": @(location.coordinate.longitude),
+                                          }
+                                  };
+                    
+                }
+            }
+            else {
+                resultDic = @{
+                             @"error": @{
+                                     @"code": @(-1),
+                                     @"localizedDescription": @"定位结果不存在"
+                                     }
+                             };
+            }
+        }
+        [self.bridge.eventDispatcher sendAppEventWithName:@"amap.location.onLocationResult"
+                                                     body:resultDic];
+    };
 }
 
 RCT_EXPORT_METHOD(cleanUp)
@@ -94,102 +162,18 @@ RCT_EXPORT_METHOD(cleanUp)
     self.locationManager = nil;
 }
 
-RCT_EXPORT_METHOD(getReGeocode:(RCTResponseSenderBlock)callback)
+
+
+RCT_EXPORT_METHOD(getReGeocode)
 {
     //进行单次带逆地理定位请求
-    [self.locationManager requestLocationWithReGeocode:YES completionBlock:^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error)
-     {
-         if (error)
-         {
-             NSLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
-             
-             //如果为定位失败的error，则不进行后续操作
-//             if (error.code == AMapLocationErrorLocateFailed)
-//             {
-                 callback(@[RCTMakeError([NSString stringWithFormat:@"%d", error.code], nil, nil)]);
-                 return;
-//             }
-         }
-         
-         //得到定位信息(regeocode)
-         if (location)
-         {
-//             NSDictionary *dict = [[NSDictionary alloc] init];
-//             [dict setValue:regeocode.formattedAddress forKey:@"formattedAddress"];
-//             [dict setValue:regeocode.country forKey:@"country"];
-//             [dict setValue:regeocode.province forKey:@"province"];
-//             [dict setValue:regeocode.city forKey:@"city"];
-//             [dict setValue:regeocode.district forKey:@"district"];
-//             [dict setValue:regeocode.citycode forKey:@"citycode"];
-//             [dict setValue:regeocode.adcode forKey:@"adcode"];
-//             [dict setValue:regeocode.street forKey:@"street"];
-//             [dict setValue:regeocode.number forKey:@"number"];
-//             [dict setValue:regeocode.POIName forKey:@"POIName"];
-//             [dict setValue:regeocode.AOIName forKey:@"AOIName"];
-//             [dict setValue:@(location.horizontalAccuracy) forKey:@"horizontalAccuracy"];
-//             [dict setValue:@(location.verticalAccuracy) forKey:@"verticalAccuracy"];
-             callback(@[[NSNull null], @{
-                            @"horizontalAccuracy": @(location.horizontalAccuracy),
-                            @"verticalAccuracy": @(location.verticalAccuracy),
-                            @"formattedAddress": regeocode.formattedAddress,
-                            @"country": regeocode.country,
-                            @"province": regeocode.province,
-                            @"city": regeocode.city,
-                            @"district": regeocode.district,
-                            @"citycode": regeocode.citycode,
-                            @"adcode": regeocode.adcode,
-                            @"street": regeocode.street,
-                            @"number": regeocode.number,
-                            @"POIName": regeocode.POIName,
-                            @"AOIName": regeocode.AOIName,
-                            }]);
-         }
-         // unknown error
-         else {
-             callback(@[RCTMakeError(@"", nil, nil)]);
-         }
-     }];
+    [self.locationManager requestLocationWithReGeocode:YES completionBlock:self.completionBlock];
 }
 
-RCT_EXPORT_METHOD(getLocation:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getLocation)
 {
     //进行单次定位请求
-    [self.locationManager requestLocationWithReGeocode:NO completionBlock:^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error)
-     {
-         if (error)
-         {
-             NSLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
-             
-             //如果为定位失败的error，则不进行后续操作
-//             if (error.code == AMapLocationErrorLocateFailed)
-//             {
-                 callback(@[RCTMakeError([NSString stringWithFormat:@"%d", error.code], nil, nil)]);
-                 return;
-//             }
-         }
-         
-         //得到定位信息(not regeocode)
-         if (location)
-         {
-//             NSDictionary *dict = [[NSDictionary alloc] init];
-//             [dict setValue:@(location.coordinate.latitude) forKey:@"latitude"];
-//             [dict setValue:@(location.coordinate.longitude) forKey:@"longitude"];
-//             [dict setValue:@(location.horizontalAccuracy) forKey:@"horizontalAccuracy"];
-//             [dict setValue:@(location.verticalAccuracy) forKey:@"verticalAccuracy"];
-             callback(@[[NSNull null], @{
-                                    @"horizontalAccuracy": @(location.horizontalAccuracy),
-                                    @"verticalAccuracy": @(location.verticalAccuracy),
-                                    @"coordinate": @{
-                                                @"latitude": @(location.coordinate.latitude),
-                                                @"longitude": @(location.coordinate.longitude),
-                                            }
-                                    }]);
-         }
-         // unknown error
-         else {
-             callback(@[RCTMakeError(@"", nil, nil)]);
-         }
-     }];
+    [self.locationManager requestLocationWithReGeocode:NO completionBlock:self.completionBlock];
 }
 
 
@@ -202,7 +186,7 @@ RCT_EXPORT_METHOD(getLocation:(RCTResponseSenderBlock)callback)
 - (NSDictionary *)constantsToExport
 {
     return @{
-             @"locationAccuracies": @{
+             @"locationMode": @{
                      @"bestForNavigation": @(kCLLocationAccuracyBestForNavigation),
                      @"best": @(kCLLocationAccuracyBest),
                      @"nearestTenMeters": @(kCLLocationAccuracyNearestTenMeters),
