@@ -6,7 +6,7 @@
 [![npm](https://img.shields.io/npm/l/react-native-smart-amap-location.svg)](https://github.com/react-native-component/react-native-smart-amap-location/blob/master/LICENSE)
 
 react-native 高德地图-定位SDK 插件, 支持ios与android,
-关于如何使用高德地图SDK的详细信息请点击[这里][1]
+关于使用高德地图SDK, 申请应用key等详细信息请点击[这里][1]
 
 ## 预览
 
