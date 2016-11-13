@@ -170,11 +170,11 @@ protected List<ReactPackage> getPackages() {
 
 ```
 
-## Full Demo
+## 完整示例
 
-see [ReactNativeComponentDemos][0]
+点击这里 [ReactNativeComponentDemos][0]
 
-## Usage
+## 使用简介
 
 Install the package from npm with `npm install react-native-smart-amap-location --save`.
 Then, require it from your app's JavaScript files with `import Barcode from 'react-native-smart-amap-location'`.
