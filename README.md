@@ -8,6 +8,8 @@
 react-native 高德地图-定位SDK 插件, 支持ios与android,
 关于使用高德地图SDK, 申请应用key等详细信息请点击[这里][1]
 
+Mac下Android Studio中获取SHA1和MD5请点击[这里][3]
+
 ## 预览
 
 ![react-native-smart-amap-location-preview-ios][2]
@@ -343,6 +345,7 @@ export default AppEventListenerEnhance(AMapLocationDemo)
 [0]: https://github.com/cyqresig/ReactNativeComponentDemos
 [1]: http://lbs.amap.com/api/
 [2]: http://cyqresig.github.io/img/react-native-smart-amap-location-preview-ios-v1.0.0.gif
+[3]: http://blog.csdn.net/jackymvc/article/details/50222503
 
 
 
