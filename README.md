@@ -323,6 +323,23 @@ class AMapLocationDemo extends Component {
 export default AppEventListenerEnhance(AMapLocationDemo)
 ```
 
+## 方法
+
+* init
+  * 描述: 初始化定位
+  * 参数: locationOptions 类型: Object, 如使用默认值则传null
+
+* getReGeocode
+  * 描述: 单次定位并返回逆地理编码信息
+
+* getLocation
+  * 描述: 单次定位并返回地理编码信息
+
+## 事件监听
+
+* 事件: amap.location.onLocationResult
+    * 描述: 监听获取定位返回信息
+
 [0]: https://github.com/cyqresig/ReactNativeComponentDemos
 [1]: http://lbs.amap.com/api/
 [2]: http://cyqresig.github.io/img/react-native-smart-amap-location-preview-ios-v1.0.0.gif
