@@ -125,7 +125,7 @@ protected List<ReactPackage> getPackages() {
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
     <!-- 请求网络 -->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- 不是SDK需要的权限，是示例中的后台唤醒定位需要的权限 -->
     <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
@@ -138,7 +138,7 @@ protected List<ReactPackage> getPackages() {
     <!--用于提高GPS定位速度-->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--读取缓存数据-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
