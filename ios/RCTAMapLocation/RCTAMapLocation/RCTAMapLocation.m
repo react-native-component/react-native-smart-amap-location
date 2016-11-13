@@ -1,6 +1,6 @@
 
-#define DefaultLocationTimeout 2
-#define DefaultReGeocodeTimeout 2
+#define DefaultLocationTimeout 10
+#define DefaultReGeocodeTimeout 5
 
 #import "RCTAMapLocation.h"
 #import "RCTUtils.h"
@@ -102,8 +102,6 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
             //得到定位信息
             if (location)
             {
-                NSDictionary *resultDic;
-                
                 if(regeocode) {
                     resultDic = @{
                                   @"horizontalAccuracy": @(location.horizontalAccuracy),

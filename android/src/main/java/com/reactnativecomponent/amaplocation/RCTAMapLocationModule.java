@@ -111,7 +111,7 @@ public class RCTAMapLocationModule extends ReactContextBaseJavaModule {
                 resultMap.putMap("error", errorMap);
             }
             locationClient.stopLocation();
-            Log.i("amaplocation", "locationClient.stopLocation();");
+//            Log.i("amaplocation", "locationClient.stopLocation();");
             reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit("amap.location.onLocationResult", resultMap);
         }
@@ -162,8 +162,11 @@ public class RCTAMapLocationModule extends ReactContextBaseJavaModule {
             locationOption.setNeedAddress(options.getBoolean("needAddress"));//可选，设置是否返回逆地理地址信息。默认是true
         }
         if(options.hasKey("onceLocation")) {
-            Log.i("amaplocation",  "onceLocation -> " + String.valueOf(options.getBoolean("onceLocation")));
+//            Log.i("amaplocation",  "onceLocation -> " + String.valueOf(options.getBoolean("onceLocation")));
             locationOption.setOnceLocation(options.getBoolean("onceLocation"));//可选，设置是否单次定位。默认是false
+        }
+        if(options.hasKey("httpTimeout")) {
+            locationOption.setHttpTimeOut(options.getInt("httpTimeout"));   //可选, 设置网络请求超时时间(单位:毫秒)。默认是30秒
         }
         if(options.hasKey("locationCacheEnable")) {
             locationOption.setLocationCacheEnable(options.getBoolean("locationCacheEnable"));//可选，设置是否开启缓存，默认为true.
