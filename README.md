@@ -44,8 +44,6 @@ npm install react-native-smart-amap-location --save
 
 * 选择Build Settings, 找到Header Search Paths, 确认其中包含$(SRCROOT)/../../../react-native/React, 模式为recursive.
 
-* 同上位置, 找到Framework Search Paths, 加入$(SRCROOT)/../../../ios/Frameworks.
-
 * 在`info.plist`中加入`Privacy - Location When In Use Usage Description`属性(ios 10)
 
 * 在`info.plist`中加入`Allow Arbitrary Loads`属性, 并设置值为YES(ios 10)
