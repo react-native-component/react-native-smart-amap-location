@@ -22,9 +22,9 @@ npm install react-native-smart-amap-location --save
 
 * 将RCTAMapLocation.xcodeproj作为Library拖进你的Xcode里的project中.
 
-* 将RCTAMapLocation目录里Frameworks目录拖进主工程目录下, 选择copy items if needed, create groups, 另外add to target不要忘记选择主工程.
+* 将RCTAMapLocation目录里Frameworks目录拖进主project目录下, 选择copy items if needed, create groups, 另外add to target不要忘记选择主project.
 
-* 点击你的主project文件, 选择Build Phases -> Link Binary With Libraries, 将RCTAMapLocation.xcodeproj里Product目录下的libRCTAMapLocation.a拖进去.
+* 点击你的主project, 选择Build Phases -> Link Binary With Libraries, 将RCTAMapLocation.xcodeproj里Product目录下的libRCTAMapLocation.a拖进去.
 
 * 同上位置, 选择Add items, 将系统库libstdc++.6.0.9.tbd加入.
 
@@ -43,6 +43,8 @@ npm install react-native-smart-amap-location --save
 * 选择Build Settings, 找到Header Search Paths, 确认其中包含$(SRCROOT)/../../../react-native/React, 模式为recursive.
 
 * 同上位置, 找到Framework Search Paths, 加入$(PROJECT_DIR)/Frameworks.
+
+* 点击在Libraries下已拖进来的RCTAMapLocation.xcodeproj, 选择Build Settings, 找到Framework Search Paths, 将$(SRCROOT)/../../../ios/Frameworks替换成$(SRCROOT)/../../../../ios/Frameworks.
 
 * 在`info.plist`中加入`Privacy - Location When In Use Usage Description`属性(ios 10)
 
