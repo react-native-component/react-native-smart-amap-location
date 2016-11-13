@@ -74,7 +74,7 @@ npm install react-native-smart-amap-location --save
 ```
 ...
 include ':react-native-smart-amap-location'
-project(':react-native-smart-amap-location').projectDir = new File(rootProject.projectDir, '../react-native-smart-amap-location/android')
+project(':react-native-smart-amap-location').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-smart-amap-location/android')
 ```
 
 * 在`android/app/build.gradle`中
