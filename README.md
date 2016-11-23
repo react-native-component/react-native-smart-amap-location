@@ -339,7 +339,7 @@ export default AppEventListenerEnhance(AMapLocationDemo)
 
 ## 事件监听
 
-* 事件: amap.location.onLocationResult
+* 全局事件: amap.location.onLocationResult
     * 描述: 监听获取定位返回信息
 
 [0]: https://github.com/cyqresig/ReactNativeComponentDemos
