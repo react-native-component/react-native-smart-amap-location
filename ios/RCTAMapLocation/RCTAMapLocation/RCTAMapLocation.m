@@ -6,7 +6,6 @@
 #import "RCTUtils.h"
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
-
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <AMapLocationKit/AMapLocationKit.h>
 
@@ -30,8 +29,29 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
         return;
     }
     
-//    NSLog(@"init locationManager");
+    self.locationManager = [[AMapLocationManager alloc] init];
     
+    [self.locationManager setDelegate:self];
+    
+    [self setOptions:options];
+    
+    self.completionBlock = ^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error)
+    {
+        NSDictionary *resultDic;
+        if (error)
+        {
+            resultDic = [self setErrorResult:error];
+        }
+        else {
+            resultDic = [self setSuccessResult:location regeocode:regeocode];
+        }
+        [self.bridge.eventDispatcher sendAppEventWithName:@"amap.location.onLocationResult"
+                                                     body:resultDic];
+    };
+}
+
+RCT_EXPORT_METHOD(setOptions:(NSDictionary *)options)
+{
     CLLocationAccuracy locationMode = kCLLocationAccuracyHundredMeters;
     BOOL pausesLocationUpdatesAutomatically = YES;
     BOOL allowsBackgroundLocationUpdates = NO;
@@ -39,7 +59,6 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     int reGeocodeTimeout = DefaultReGeocodeTimeout;
     
     if(options != nil) {
-//        NSLog(@"set options");
         
         NSArray *keys = [options allKeys];
         
@@ -58,18 +77,12 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
         
         if([keys containsObject:@"locationTimeout"]) {
             locationTimeout = [[options objectForKey:@"locationTimeout"] intValue];
-//            NSLog(@"locationTimeout = %d", locationTimeout);
         }
         
         if([keys containsObject:@"reGeocodeTimeout"]) {
             reGeocodeTimeout = [[options objectForKey:@"reGeocodeTimeout"] intValue];
-//            NSLog(@"reGeocodeTimeout = %d", reGeocodeTimeout);
         }
     }
-    
-    self.locationManager = [[AMapLocationManager alloc] init];
-    
-    [self.locationManager setDelegate:self];
     
     //设置期望定位精度
     [self.locationManager setDesiredAccuracy:locationMode];
@@ -85,73 +98,11 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     
     //设置逆地理超时时间
     [self.locationManager setReGeocodeTimeout:reGeocodeTimeout];
-    
-    self.completionBlock = ^(CLLocation *location, AMapLocationReGeocode *regeocode, NSError *error)
-    {
-        NSDictionary *resultDic;
-        if (error)
-        {
-            resultDic = @{
-                          @"error": @{
-                                  @"code": @(error.code),
-                                  @"localizedDescription": error.localizedDescription
-                                  }
-                          };
-        }
-        else {
-            //得到定位信息
-            if (location)
-            {
-                if(regeocode) {
-                    resultDic = @{
-                                  @"horizontalAccuracy": @(location.horizontalAccuracy),
-                                  @"verticalAccuracy": @(location.verticalAccuracy),
-                                  @"coordinate": @{
-                                          @"latitude": @(location.coordinate.latitude),
-                                          @"longitude": @(location.coordinate.longitude),
-                                          },
-                                  @"formattedAddress": regeocode.formattedAddress,
-                                  @"country": regeocode.country,
-                                  @"province": regeocode.province,
-                                  @"city": regeocode.city,
-                                  @"district": regeocode.district,
-                                  @"citycode": regeocode.citycode,
-                                  @"adcode": regeocode.adcode,
-                                  @"street": regeocode.street,
-                                  @"number": regeocode.number,
-                                  @"POIName": regeocode.POIName,
-                                  @"AOIName": regeocode.AOIName
-                                  };
-                }
-                else {
-                    resultDic = @{
-                                  @"horizontalAccuracy": @(location.horizontalAccuracy),
-                                  @"verticalAccuracy": @(location.verticalAccuracy),
-                                  @"coordinate": @{
-                                          @"latitude": @(location.coordinate.latitude),
-                                          @"longitude": @(location.coordinate.longitude),
-                                          }
-                                  };
-                    
-                }
-            }
-            else {
-                resultDic = @{
-                             @"error": @{
-                                     @"code": @(-1),
-                                     @"localizedDescription": @"定位结果不存在"
-                                     }
-                             };
-            }
-        }
-        [self.bridge.eventDispatcher sendAppEventWithName:@"amap.location.onLocationResult"
-                                                     body:resultDic];
-    };
+
 }
 
 RCT_EXPORT_METHOD(cleanUp)
 {
-//    NSLog(@"stop location and clean up");
     //停止定位
     [self.locationManager stopUpdatingLocation];
     
@@ -174,10 +125,112 @@ RCT_EXPORT_METHOD(getLocation)
     [self.locationManager requestLocationWithReGeocode:NO completionBlock:self.completionBlock];
 }
 
+RCT_EXPORT_METHOD(startUpdatingLocation)
+{
+    //开始进行连续定位
+    [self.locationManager startUpdatingLocation];
+}
+
+RCT_EXPORT_METHOD(stopUpdatingLocation)
+{
+    //停止连续定位
+    [self.locationManager stopUpdatingLocation];
+
+}
 
 - (void)dealloc
 {
     [self cleanUp];
+}
+
+- (NSDictionary*)setErrorResult:(NSError *)error
+{
+    NSDictionary *resultDic;
+    
+    resultDic = @{
+                  @"error": @{
+                          @"code": @(error.code),
+                          @"localizedDescription": error.localizedDescription
+                          }
+                  };
+    return resultDic;
+}
+
+- (NSDictionary*)setSuccessResult:(CLLocation *)location regeocode:(AMapLocationReGeocode *)regeocode
+{
+    NSDictionary *resultDic;
+    
+    //得到定位信息
+    if (location)
+    {
+        if(regeocode) {
+            resultDic = @{
+                          @"horizontalAccuracy": @(location.horizontalAccuracy),
+                          @"verticalAccuracy": @(location.verticalAccuracy),
+                          @"coordinate": @{
+                                  @"latitude": @(location.coordinate.latitude),
+                                  @"longitude": @(location.coordinate.longitude),
+                                  },
+                          @"formattedAddress": regeocode.formattedAddress,
+                          @"country": regeocode.country,
+                          @"province": regeocode.province,
+                          @"city": regeocode.city,
+                          @"district": regeocode.district,
+                          @"citycode": regeocode.citycode,
+                          @"adcode": regeocode.adcode,
+                          @"street": regeocode.street,
+                          @"number": regeocode.number,
+                          @"POIName": regeocode.POIName,
+                          @"AOIName": regeocode.AOIName
+                          };
+        }
+        else {
+            resultDic = @{
+                          @"horizontalAccuracy": @(location.horizontalAccuracy),
+                          @"verticalAccuracy": @(location.verticalAccuracy),
+                          @"coordinate": @{
+                                  @"latitude": @(location.coordinate.latitude),
+                                  @"longitude": @(location.coordinate.longitude),
+                                  }
+                          };
+            
+        }
+    }
+    else {
+        resultDic = @{
+                      @"error": @{
+                              @"code": @(-1),
+                              @"localizedDescription": @"定位结果不存在"
+                              }
+                      };
+    }
+    return resultDic;
+}
+
+#pragma mark - AMapLocationManager Delegate
+
+- (void)amapLocationManager:(AMapLocationManager *)manager didFailWithError:(NSError *)error
+{
+//    NSLog(@"%s, amapLocationManager = %@, error = %@", __func__, [manager class], error);
+    NSDictionary *resultDic;
+    
+    resultDic = [self setErrorResult:error];
+    
+    [self.bridge.eventDispatcher sendAppEventWithName:@"amap.location.onLocationResult"
+                                                 body:resultDic];
+}
+
+- (void)amapLocationManager:(AMapLocationManager *)manager didUpdateLocation:(CLLocation *)location reGeocode:(AMapLocationReGeocode *)regeocode
+{
+//    NSLog(@"location:{lat:%f; lon:%f; accuracy:%f; regeocode:%@}", location.coordinate.latitude, location.coordinate.longitude, location.horizontalAccuracy, regeocode.formattedAddress);
+    
+    NSDictionary *resultDic;
+    
+    resultDic = [self setSuccessResult:location regeocode:regeocode];
+    
+    [self.bridge.eventDispatcher sendAppEventWithName:@"amap.location.onLocationResult"
+                                                 body:resultDic];
+
 }
 
 

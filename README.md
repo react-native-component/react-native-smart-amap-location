@@ -42,6 +42,8 @@ npm install react-native-smart-amap-location --save
 
 * 同上位置, 选择Add items, 将系统库JavaScriptCore.framework加入.
 
+* 如需要开启后台定位, 选择Capabilities, 找到Background Modes选择ON, 勾选上Location Updates.
+
 * 选择Build Settings, 找到Header Search Paths, 确认其中包含$(SRCROOT)/../../../react-native/React, 模式为recursive.
 
 * 同上位置, 找到Framework Search Paths, 加入$(PROJECT_DIR)/Frameworks.
@@ -325,6 +327,26 @@ class AMapLocationDemo extends Component {
 export default AppEventListenerEnhance(AMapLocationDemo)
 ```
 
+## 定位配置参数 (ios)
+* locationOptions.locationMode  设定定位精度, 默认为百米误差内
+* locationOptions.pausesLocationUpdatesAutomatically  指定定位是否会被系统自动暂停。默认为YES。
+* locationOptions.allowsBackgroundLocationUpdates 是否允许后台定位。默认为NO。只在iOS 9.0及之后起作用。设置为YES的时候必须保证 Background Modes 中的 Location updates 处于选中状态，否则会抛出异常。
+* locationOptions.locationTimeout 指定单次定位超时时间,默认为10s。最小值是2s。注意单次定位请求前设置。
+* locationOptions.reGeocodeTimeout 指定单次定位逆地理超时时间,默认为5s。最小值是2s。注意单次定位请求前设置。
+
+## 定位配置参数 (android)
+* locationOptions.locationMode  设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
+* locationOptions.gpsFirst 设置是否gps优先，只在高精度模式下有效。默认关闭
+* locationOptions.allowsBackgroundLocationUpdates 是否允许后台定位。默认为NO
+* locationOptions.httpTimeout 设置网络请求超时时间。默认为30秒。在仅设备模式下无效
+* locationOptions.interval 设置连续定位间隔。
+* locationOptions.needAddress 设置是否返回逆地理地址信息。默认是true。
+* locationOptions.onceLocation 设置是否单次定位。默认是false
+* locationOptions.locationCacheEnable 设置是否开启缓存，默认为true。
+* locationOptions.onceLocationLatest 设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用。
+* locationOptions.locationProtocol 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP。
+* locationOptions.sensorEnable 设置是否使用传感器。默认是false。
+
 ## 方法
 
 * init
@@ -337,10 +359,16 @@ export default AppEventListenerEnhance(AMapLocationDemo)
 * getLocation
   * 描述: 单次定位并返回地理编码信息
 
+* startUpdatingLocation
+  * 描述: 连续定位并返回位置信息. 注:连续定位的使用请参见上述的完整示例
+
+* stopUpdatingLocation
+  * 描述: 结束连接定位. 注:连续定位的使用请参见上述的完整示例
+
 ## 事件监听
 
 * 全局事件: amap.location.onLocationResult
-    * 描述: 监听获取定位返回信息
+    * 描述: 监听并获取定位信息
 
 [0]: https://github.com/cyqresig/ReactNativeComponentDemos
 [1]: http://lbs.amap.com/api/
