@@ -20,6 +20,11 @@ Mac下Android Studio中获取SHA1和MD5请点击[这里][3]
 npm install react-native-smart-amap-location --save
 ```
 
+## Notice
+
+这个版本仅支持react-native 0.40及以上, 如果你想使用旧的版本，使用`npm install react-native-smart-amap-location@untilRN0.40 --save`
+
+
 ## 安装 (iOS)
 
 * 将RCTAMapLocation.xcodeproj作为Library拖进你的Xcode里的project中.
