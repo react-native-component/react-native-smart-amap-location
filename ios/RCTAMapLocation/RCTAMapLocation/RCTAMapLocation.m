@@ -171,17 +171,17 @@ RCT_EXPORT_METHOD(stopUpdatingLocation)
                                   @"latitude": @(location.coordinate.latitude),
                                   @"longitude": @(location.coordinate.longitude),
                                   },
-                          @"formattedAddress": regeocode.formattedAddress,
-                          @"country": regeocode.country,
-                          @"province": regeocode.province,
+                          @"formattedAddress": regeocode.formattedAddress ? : [NSNull null],
+                          @"country": regeocode.country ? : [NSNull null],
+                          @"province": regeocode.province ? : [NSNull null],
                           @"city": regeocode.city,
-                          @"district": regeocode.district,
-                          @"citycode": regeocode.citycode,
-                          @"adcode": regeocode.adcode,
-                          @"street": regeocode.street,
-                          @"number": regeocode.number,
-                          @"POIName": regeocode.POIName,
-                          @"AOIName": regeocode.AOIName
+                          @"district": regeocode.district ? : [NSNull null],
+                          @"citycode": regeocode.citycode ? : [NSNull null],
+                          @"adcode": regeocode.adcode ? : [NSNull null],
+                          @"street": regeocode.street ? : [NSNull null],
+                          @"number": regeocode.number ? : [NSNull null],
+                          @"POIName": regeocode.POIName ? : [NSNull null],
+                          @"AOIName": regeocode.AOIName ? : [NSNull null]
                           };
         }
         else {
