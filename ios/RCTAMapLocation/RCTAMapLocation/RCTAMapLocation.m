@@ -9,6 +9,8 @@
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <AMapLocationKit/AMapLocationKit.h>
 
+#define amap_emptyStr(obj)               (!obj ? @"" : (((NSNull *)(obj) == [NSNull null] ? @"" : (obj))))
+
 @interface RCTAMapLocation() <AMapLocationManagerDelegate>
 
 @property (nonatomic, strong) AMapLocationManager *locationManager;
@@ -171,17 +173,17 @@ RCT_EXPORT_METHOD(stopUpdatingLocation)
                                   @"latitude": @(location.coordinate.latitude),
                                   @"longitude": @(location.coordinate.longitude),
                                   },
-                          @"formattedAddress": regeocode.formattedAddress,
-                          @"country": regeocode.country,
-                          @"province": regeocode.province,
-                          @"city": regeocode.city,
-                          @"district": regeocode.district,
-                          @"citycode": regeocode.citycode,
-                          @"adcode": regeocode.adcode,
-                          @"street": regeocode.street,
-                          @"number": regeocode.number,
-                          @"POIName": regeocode.POIName,
-                          @"AOIName": regeocode.AOIName
+                          @"formattedAddress": amap_emptyStr(regeocode.formattedAddress),
+                          @"country": amap_emptyStr(regeocode.country),
+                          @"province": amap_emptyStr(regeocode.province),
+                          @"city": amap_emptyStr(regeocode.city),
+                          @"district": amap_emptyStr(regeocode.district),
+                          @"citycode": amap_emptyStr(regeocode.citycode),
+                          @"adcode": amap_emptyStr(regeocode.adcode),
+                          @"street": amap_emptyStr(regeocode.street),
+                          @"number": amap_emptyStr(regeocode.number),
+                          @"POIName": amap_emptyStr(regeocode.POIName),
+                          @"AOIName": amap_emptyStr(regeocode.AOIName)
                           };
         }
         else {
