@@ -221,7 +221,7 @@
 		9F042C3B1DD56193001BA3C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../ios/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../ios/Frameworks";
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -238,7 +238,7 @@
 		9F042C3C1DD56193001BA3C4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../ios/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../ios/Frameworks";
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

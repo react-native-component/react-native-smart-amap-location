@@ -1,6 +1,6 @@
 {
   "name": "react-native-smart-amap-location",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A AMap location Library for React Native apps.",
   "main": "AMapLocation.js",
   "scripts": {
