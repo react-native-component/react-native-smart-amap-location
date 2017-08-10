@@ -20,7 +20,7 @@ public class RCTAMapLocationPackage implements ReactPackage {
         );
     }
 
-    @Override
+    // 兼容 react-native 0.47
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
     }
