@@ -3,7 +3,7 @@
 //  AMapLocationKit
 //
 //  Created by AutoNavi on 16/1/22.
-//  Copyright © 2016年 AutoNavi. All rights reserved.
+//  Copyright © 2016年 Amap. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -12,8 +12,8 @@
 #ifndef AMapLoctionVersion_h
 #define AMapLoctionVersion_h
 
-#define AMapLocationVersionNumber                   20200
-#define AMapLocationFoundationVersionMinRequired    10300
+#define AMapLocationVersionNumber                   20400
+#define AMapLocationFoundationVersionMinRequired    10400
 
 // 依赖库版本检测
 #if AMapFoundationVersionNumber < AMapLocationFoundationVersionMinRequired
